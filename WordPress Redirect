@@ -1,0 +1,59 @@
+//These are some useful codes that I am currently using on a company site to redirect visitors/users//
+====================================================================================================================================
+//redirect newly registered users
+function redirect_after_registration($user_id) {
+    wp_redirect('https://yoursite.com/');
+    exit;
+}
+add_action('user_register', 'redirect_after_registration');
+
+// Display registration success notification
+function display_registration_notification() {
+    if (isset($_GET['registration_success'])) {
+        echo '<div id="registration-notification" class="notification">You have successfully registered.</div>';
+    }
+}
+add_action('wp_footer', 'display_registration_notification');
+====================================================================================================================================
+//redirect users after logout
+function redirect_after_logout() {
+    wp_redirect(home_url());
+    exit;
+}
+add_action('wp_logout', 'redirect_after_logout');
+
+// Display logout success overlay
+function display_logout_overlay() {
+    if (isset($_GET['logout_success'])) {
+        echo '<div id="logout-overlay" class="overlay">You have successfully logged out.</div>';
+    }
+}
+add_action('wp_footer', 'display_logout_overlay');
+====================================================================================================================================
+//
+redirect unauthenticated users or visitors. This is good for locking specific pages where you'd like a visitor/user to be signed into your site before accessing the page.
+In my code specifically I have applied the page names of the pages to lock down.
+//
+function redirect_unauthenticated_users() {
+    $locked_pages = array(
+        '/employees/',
+        '/onboarding/',
+        '/resources/',
+        '/safety-videos/'
+    );
+
+    if (!is_user_logged_in() && in_array($_SERVER['REQUEST_URI'], $locked_pages)) {
+        wp_redirect('https://yoursite.com');
+        exit;
+    }
+}
+add_action('template_redirect', 'redirect_unauthenticated_users');
+====================================================================================================================================
+//This code restricts 'employees' from accessing the Admin panel of WordPress. I did this using Memberpress and assigning roles to those spevific users.//
+function restrict_employee_from_admin_panel() {
+    if (current_user_can('employee')) {
+        wp_redirect(home_url());
+        exit;
+    }
+}
+add_action('admin_init', 'restrict_employee_from_admin_panel');
