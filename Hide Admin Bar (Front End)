@@ -1,0 +1,7 @@
+//
+copy the following code and add it to your WordPress site.
+When logged into your WordPress admin panel the admin bar at the top will not show up when viewing the site.
+I personally use Advanced Scripts for all my WordPress codes in use.
+//
+
+add_filter('show_admin_bar', '__return_false');
